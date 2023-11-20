@@ -9,18 +9,18 @@ namespace ConvergenceRandomizer
     {
         private static void Main()
         {
+            
             string processName = "Convergence";
             string assemblyPath = "Randomizer.dll";
             string @namespace = "Randomizer";
             string className = "RandomizerLoader";
             string methodName = "Init";
             string currentDirectory = Directory.GetCurrentDirectory();
+            //Injector injector = new Injector(processName);
 
-            Injector injector = new Injector(processName);
+            //Inject(injector, assemblyPath, @namespace, className, methodName);
 
-            Inject(injector, assemblyPath, @namespace, className, methodName);
-
-            SendInformation(currentDirectory);
+            //SendInformation(currentDirectory);
         }
 
         private static void Inject(Injector injector, string assemblyPath, string @namespace, string className, string methodName)
@@ -65,7 +65,7 @@ namespace ConvergenceRandomizer
         private static void SendInformation(string information)
         {
             Console.WriteLine("Creating pipe...");
-            using (NamedPipeServerStream serverPipe = new NamedPipeServerStream("PipeCTB", PipeDirection.Out))
+            using (NamedPipeServerStream serverPipe = new NamedPipeServerStream("PipeCR", PipeDirection.Out))
             {
                 Console.WriteLine("Waiting for the DLL to connect...");
                 serverPipe.WaitForConnection();

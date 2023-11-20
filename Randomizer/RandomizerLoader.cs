@@ -1,17 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using UnityEngine;
 
 namespace Randomizer
 {
-    public class RandomizerLoader
+    public class RandomizerLoader 
     {
+        private static GameObject RandomizerObject;
 
-        public void Init()
+        public static void Init()
         {
-            return;
+            System.Diagnostics.Debug.WriteLine("first------------------------------------------------------");
+            RandomizerObject = new GameObject();
+            RandomizerObject.AddComponent<RandomizerManager>();
+            GameObject.DontDestroyOnLoad(RandomizerObject);
         }
     }
 }
