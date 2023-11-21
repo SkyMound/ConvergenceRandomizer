@@ -8,6 +8,6 @@ namespace ConvergenceRandomizer
 {
     abstract class Algorithm
     {
-        public abstract Dictionary<string, string> ComputeTransitionMap(List<Door> doorsData);
+        public abstract Dictionary<string, string> ComputeTransitionMap(Dictionary<string, Door> doorsData);
     }
 }

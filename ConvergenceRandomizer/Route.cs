@@ -10,5 +10,19 @@ namespace ConvergenceRandomizer
     {
         public T LeadsTo;
         public List<Combination> Combinations;
+
+        public bool CanBeDone(PlayerState player)
+        {
+            foreach (Combination combination in this.Combinations)
+            {
+                if (combination.Difficulty <= player.Difficulty && combination.AbilitiesRequired.All(abilityRequired => player.Abilities.Contains(abilityRequired)))
+                {
+                    return true;
+                }
+
+            }
+
+            return false;
+        }
     }
 }

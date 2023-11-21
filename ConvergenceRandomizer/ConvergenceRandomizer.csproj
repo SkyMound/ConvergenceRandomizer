@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Ability.cs" />
     <Compile Include="Algorithm.cs" />
+    <Compile Include="DefaultAlgorithm.cs" />
     <Compile Include="PlayerState.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Door.cs" />

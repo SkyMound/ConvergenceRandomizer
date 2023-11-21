@@ -8,56 +8,43 @@ namespace ConvergenceRandomizer
 {
     class Helper
     {
+        private static Random rng = new Random();
+
+        public static string FirstDoorName = "P1L1_TUT_Gameplay_RoomDoor_Edge_ToEntresol";
+        public static string LastDoorName = "P7L1C3_CAR_Gameplay_RoomDoor_Edge_ToC2";
+
+        public static List<T> Shuffle<T>(List<T> list)
+        {
+            int n = list.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                T value = list[k];
+                list[k] = list[n];
+                list[n] = value;
+            }
+            return list;
+        }
+
         public static HashSet<string> GetAllRooms(List<Door> allDoors)
         {
-            HashSet<string> allRooms = new HashSet<string>();
-            foreach(Door door in allDoors)
-            {
-                allRooms.Add(door.Name);
-            }
-            return allRooms;
+            return new HashSet<string>(allDoors.ConvertAll(door => door.Name));
         }
 
-        public static bool CanDoRoute<T>(Route<T> route, PlayerState player, Difficulty difficulty = Difficulty.Godlike)
-        {
-            
-            foreach(Combination combination in route.Combinations)
-            {
-                if(combination.Difficulty <= difficulty && combination.AbilitiesRequired.All(abilityRequired => player.Abilities.Contains(abilityRequired)))
-                {
-                    return true;
-                }
-                
-            }
+        
 
-            return false;
-        }
-
-        public static HashSet<string> ComputeDirectReachableDoorsName(Door door, PlayerState player, Difficulty difficulty = Difficulty.Godlike)
-        {
-            HashSet<string> directReachableDoors = new HashSet<string>();
-
-            foreach(Route<string> routeToDirectDoors in door.ToDoors)
-            {
-                if (CanDoRoute(routeToDirectDoors, player, difficulty)){
-                    directReachableDoors.Add(routeToDirectDoors.LeadsTo);
-                }
-            }
-
-            return directReachableDoors;
-        }
-
-        public static HashSet<string> ComputeReachableDoorsName(Door door, PlayerState player, Dictionary<string,string> transitionMap, Dictionary<string,Door> doorsData,bool isFirstIteration = true, Difficulty difficulty = Difficulty.Godlike)
+        public static HashSet<string> GetReachableDoorsNameNotMapped(Door door, PlayerState player, Dictionary<string,string> transitionMap, Dictionary<string,Door> doorsData,bool isFirstIteration = true)
         {
             HashSet<string> reachableDoors = new HashSet<string>();
 
             if (isFirstIteration)
             {
-                HashSet<string> reachableDirectDoors = ComputeDirectReachableDoorsName(door, player, difficulty);
+                HashSet<string> reachableDirectDoors = door.GetDirectReachableDoorsName(player);
                 foreach(string directDoorName in reachableDirectDoors)
                 {
                     if (doorsData.TryGetValue(directDoorName, out Door directDoor))
-                        reachableDoors.UnionWith(ComputeReachableDoorsName(directDoor, player, transitionMap, doorsData, false, difficulty));
+                        reachableDoors.UnionWith(GetReachableDoorsNameNotMapped(directDoor, player, transitionMap, doorsData, false));
                 }
             }
 
@@ -65,11 +52,11 @@ namespace ConvergenceRandomizer
             {
                 if(doorsData.TryGetValue(transitionDoorName,out Door transitionDoor))
                 {
-                    HashSet<string> reachableDirectDoors = ComputeDirectReachableDoorsName(transitionDoor, player, difficulty);
+                    HashSet<string> reachableDirectDoors = transitionDoor.GetDirectReachableDoorsName(player);
                     foreach (string directDoorName in reachableDirectDoors)
                     {
                         if (doorsData.TryGetValue(directDoorName, out Door directDoor))
-                            reachableDoors.UnionWith(ComputeReachableDoorsName(directDoor, player, transitionMap, doorsData, false, difficulty));
+                            reachableDoors.UnionWith(GetReachableDoorsNameNotMapped(directDoor, player, transitionMap, doorsData, false));
                     }
                 }
             }
